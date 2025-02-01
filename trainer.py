@@ -19,14 +19,15 @@ def create_training_arguments() -> TrainingArguments:
     """
     training_args = TrainingArguments(
         output_dir=OUTPUT_DIR,  # Where to save the model checkpoints
-        num_train_epochs=10,  # Adjust number of epochs as needed
+        # num_train_epochs=90,  # Adjust number of epochs as needed
+        num_train_epochs=60,  # Adjust number of epochs as needed
         fp16=False,  # Use mixed precision if you have a supported GPU (set to True for faster training)
         per_device_train_batch_size=8,  # Batch size for training
         dataloader_num_workers=4,  # Number of worker processes for data loading
-        learning_rate=1e-3,  # Learning rate for fine-tuning
+        learning_rate=5e-5,  # Learning rate for fine-tuning
         lr_scheduler_type="cosine",  # Type of learning rate scheduler
         weight_decay=1e-4,  # Weight decay to avoid overfitting
-        max_grad_norm=0.1,  # Gradient clipping to avoid exploding gradients
+        max_grad_norm=0.01,  # Gradient clipping to avoid exploding gradients
         metric_for_best_model="eval_map",  # Metric to determine the best model
         greater_is_better=True,  # Whether a higher metric is better
         load_best_model_at_end=True,  # Load the best model after training
@@ -41,7 +42,7 @@ def create_training_arguments() -> TrainingArguments:
     return training_args
 
 
-def build_trainer(model, image_processor, datasets) -> Trainer:
+def build_trainer(model, processor, datasets) -> Trainer:
     """
     Build and return the trainer object for training and evaluation.
 
@@ -55,6 +56,8 @@ def build_trainer(model, image_processor, datasets) -> Trainer:
     """
     def collate_fn(batch):
         data = {}
+        if "pixel_values" not in batch[0]:
+            batch
         data["pixel_values"] = torch.stack([x["pixel_values"] for x in batch])
         data["labels"] = [x["labels"] for x in batch]
 
@@ -67,7 +70,7 @@ def build_trainer(model, image_processor, datasets) -> Trainer:
 
     # Partial function to compute metrics
     compute_metrics_fn = partial(
-        compute_metrics, image_processor=image_processor, id2label=ID2LABEL, threshold=0.0
+        compute_metrics, image_processor=processor, id2label=ID2LABEL, threshold=0.0
     )
 
     return Trainer(
