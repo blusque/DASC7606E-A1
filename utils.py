@@ -37,5 +37,5 @@ def not_change_test_dataset(raw_datasets: DatasetDict) -> bool:
     return (
         raw_datasets_test.num_rows == TEST_DATASET_ROW_NUMBER
         and raw_datasets_test.size_in_bytes == TEST_DATASET_SIZE_IN_BYTES
-        and raw_datasets_test._fingerprint == TEST_DATASET_FINGERPRINT
+        and raw_datasets_test._fingerprint == TEST_DATASET_FINGERPRINT    # Cannot keep fingerprint constant when using `map` or `with_transform` method on test dataset. Without these methods, the 'pixel_values' and 'labels' columns are not present in the test dataset.
     )

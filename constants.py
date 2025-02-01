@@ -1,6 +1,7 @@
 SEED = 42  # Random seed for reproducibility
 MODEL_NAME = "microsoft/conditional-detr-resnet-50"
-ID2LABEL = {0: "Coverall", 1: "Face_Shield", 2: "Gloves", 3: "Goggles", 4: "Mask"}
+MAX_SIZE = 480
+ID2LABEL = {0: 'Coverall', 1: 'Face_Shield', 2: 'Gloves', 3: 'Goggles', 4: 'Mask'}
 LABEL2ID = {label: id for id, label in ID2LABEL.items()}
 
 OUTPUT_DIR = "checkpoints"
