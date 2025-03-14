@@ -71,9 +71,9 @@ def build_dataset() -> DatasetDict | Dataset | IterableDatasetDict | IterableDat
     from datasets import load_dataset
     raw_datasets = load_dataset("cppe-5")
     if "validation" not in raw_datasets:
-        # split = raw_datasets["train"].train_test_split(0.1, seed=1337)
-        # raw_datasets["train"] = split["train"]
-        raw_datasets["validation"] = raw_datasets["test"]
+        split = raw_datasets["train"].train_test_split(0.05, seed=1337)
+        raw_datasets["train"] = split["train"]
+        raw_datasets["validation"] = split["test"]
     return raw_datasets
 
 

@@ -19,14 +19,14 @@ def create_training_arguments() -> TrainingArguments:
     """
     training_args = TrainingArguments(
         output_dir=OUTPUT_DIR,  # Where to save the model checkpoints
-        # num_train_epochs=90,  # Adjust number of epochs as needed
-        num_train_epochs=60,  # Adjust number of epochs as needed
+        # num_train_epochs=180,  # Adjust number of epochs as needed
+        num_train_epochs=30,  # Adjust number of epochs as needed
         fp16=False,  # Use mixed precision if you have a supported GPU (set to True for faster training)
         per_device_train_batch_size=8,  # Batch size for training
         dataloader_num_workers=4,  # Number of worker processes for data loading
         learning_rate=5e-5,  # Learning rate for fine-tuning
-        lr_scheduler_type="cosine",  # Type of learning rate scheduler
-        weight_decay=1e-4,  # Weight decay to avoid overfitting
+        lr_scheduler_type="linear",  # Type of learning rate scheduler
+        weight_decay=1e-6,  # Weight decay to avoid overfitting
         max_grad_norm=0.01,  # Gradient clipping to avoid exploding gradients
         metric_for_best_model="eval_map",  # Metric to determine the best model
         greater_is_better=True,  # Whether a higher metric is better

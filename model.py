@@ -24,13 +24,18 @@ def initialize_model():
     ref: https://huggingface.co/transformers/main_classes/trainer.html#transformers.Trainer
     """
     # Write your code here.
-    from transformers import AutoModelForObjectDetection
+    from transformers import AutoModelForObjectDetection, AutoModelForZeroShotObjectDetection
 
     model = AutoModelForObjectDetection.from_pretrained(MODEL_NAME, 
-                                                        id2label=ID2LABEL,
-                                                        label2id=LABEL2ID,
-                                                        ignore_mismatched_sizes=True
-                                                        )
+                                                            id2label=ID2LABEL,
+                                                            label2id=LABEL2ID,
+                                                            ignore_mismatched_sizes=True
+                                                            )
+    # model = AutoModelForZeroShotObjectDetection.from_pretrained(MODEL_NAME, 
+    #                                                         id2label=ID2LABEL,
+    #                                                         label2id=LABEL2ID,
+    #                                                         ignore_mismatched_sizes=True
+    #                                                         )
     return model
 
 
