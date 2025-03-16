@@ -20,23 +20,25 @@ def create_training_arguments() -> TrainingArguments:
     training_args = TrainingArguments(
         output_dir=OUTPUT_DIR,  # Where to save the model checkpoints
         # num_train_epochs=180,  # Adjust number of epochs as needed
-        num_train_epochs=30,  # Adjust number of epochs as needed
-        fp16=False,  # Use mixed precision if you have a supported GPU (set to True for faster training)
+        num_train_epochs=80,  # Adjust number of epochs as needed
+        fp16=True,  # Use mixed precision if you have a supported GPU (set to True for faster training)
         per_device_train_batch_size=8,  # Batch size for training
         dataloader_num_workers=4,  # Number of worker processes for data loading
         learning_rate=5e-5,  # Learning rate for fine-tuning
-        lr_scheduler_type="linear",  # Type of learning rate scheduler
-        weight_decay=1e-6,  # Weight decay to avoid overfitting
-        max_grad_norm=0.01,  # Gradient clipping to avoid exploding gradients
+        lr_scheduler_type="cosine",  # Type of learning rate scheduler
+        # lr_scheduler_kwargs={"num_stable_steps": 500, "num_decay_steps": 2000, "min_lr_ratio": 0.01},  # Scheduler arguments
+        weight_decay=0,  # Weight decay to avoid overfitting
+        max_grad_norm=0.1,  # Gradient clipping to avoid exploding gradients
         metric_for_best_model="eval_map",  # Metric to determine the best model
         greater_is_better=True,  # Whether a higher metric is better
         load_best_model_at_end=True,  # Load the best model after training
         eval_strategy="epoch",  # Evaluate at the end of every epoch
         save_strategy="epoch",  # Save the model at the end of every epoch
+        save_safetensors=False,  # Save the model in safe mode
         save_total_limit=2,  # Keep only the last 2 checkpoints
         remove_unused_columns=False,  # Don't remove columns like 'image' (important for data)
         eval_do_concat_batches=False,  # Ensure proper evaluation when batches are not concatenated
-        push_to_hub=False,  # Whether to push the model to the Hub
+        push_to_hub=False,  # Whether to push the model to the Hub,
     )
 
     return training_args

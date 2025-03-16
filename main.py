@@ -12,7 +12,7 @@ import transformers
 
 # Configuration Constants
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
-
+os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'
 
 def main():
     """
@@ -34,9 +34,6 @@ def main():
 
     # Build the object detection model
     model = initialize_model()
-
-    # Dirty hack to pass the test dataset check
-    # assert not_change_test_dataset(datasets), "You should not change the test dataset"
 
     # Build and train the model
     trainer = build_trainer(

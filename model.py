@@ -24,14 +24,19 @@ def initialize_model():
     ref: https://huggingface.co/transformers/main_classes/trainer.html#transformers.Trainer
     """
     # Write your code here.
-    from transformers import AutoModelForObjectDetection, AutoModelForZeroShotObjectDetection
+    from transformers import AutoModelForObjectDetection, GroundingDinoForObjectDetection, DeformableDetrForObjectDetection
 
     model = AutoModelForObjectDetection.from_pretrained(MODEL_NAME, 
-                                                            id2label=ID2LABEL,
-                                                            label2id=LABEL2ID,
-                                                            ignore_mismatched_sizes=True
-                                                            )
-    # model = AutoModelForZeroShotObjectDetection.from_pretrained(MODEL_NAME, 
+                                                        id2label=ID2LABEL,
+                                                        label2id=LABEL2ID,
+                                                        ignore_mismatched_sizes=True
+                                                        )
+    # model = DeformableDetrForObjectDetection.from_pretrained(MODEL_NAME, 
+    #                                                         id2label=ID2LABEL,
+    #                                                         label2id=LABEL2ID,
+    #                                                         ignore_mismatched_sizes=True
+    #                                                         )
+    # model = GroundingDinoForObjectDetection.from_pretrained(MODEL_NAME, 
     #                                                         id2label=ID2LABEL,
     #                                                         label2id=LABEL2ID,
     #                                                         ignore_mismatched_sizes=True

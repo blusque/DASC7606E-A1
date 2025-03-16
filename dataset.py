@@ -1,4 +1,5 @@
 from datasets import Dataset, DatasetDict, IterableDataset, IterableDatasetDict
+from constants import ID2LABEL
 
 class CocoBase:
     def __init__(self):
@@ -143,6 +144,7 @@ def add_preprocessing(dataset, processor) -> DatasetDict | Dataset | IterableDat
     def augment_and_transform_batch(examples, augs, processor, return_pixel_mask=False):
         images = []
         annotations = []
+        texts = []
 
         for image_id, image, objects in zip(examples["image_id"], examples["image"], examples["objects"]):
             image = np.array(image.convert("RGB"))
@@ -152,6 +154,8 @@ def add_preprocessing(dataset, processor) -> DatasetDict | Dataset | IterableDat
 
             formatted_annotations = format_image_annotations_as_coco(image_id, objects["category"], objects["area"], objects["bbox"])
             annotations.append(formatted_annotations)
+
+            texts.append(list(map(lambda x: ID2LABEL[x], objects["category"])))
 
         result = processor(images=images, annotations=annotations, return_tensors="pt")
 
