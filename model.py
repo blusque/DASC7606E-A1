@@ -24,13 +24,20 @@ def initialize_model():
     ref: https://huggingface.co/transformers/main_classes/trainer.html#transformers.Trainer
     """
     # Write your code here.
-    from transformers import AutoModelForObjectDetection, GroundingDinoForObjectDetection, DeformableDetrForObjectDetection
+    from transformers import AutoModelForObjectDetection, AutoModel
 
     model = AutoModelForObjectDetection.from_pretrained(MODEL_NAME, 
                                                         id2label=ID2LABEL,
                                                         label2id=LABEL2ID,
-                                                        ignore_mismatched_sizes=True
+                                                        ignore_mismatched_sizes=True,
+                                                        # two_stage=True,
+                                                        # with_box_refine=True
                                                         )
+    # model = AutoModel.from_pretrained(MODEL_NAME, 
+    #                                 id2label=ID2LABEL,
+    #                                 label2id=LABEL2ID,
+    #                                 ignore_mismatched_sizes=True
+    #                                 )
     # model = DeformableDetrForObjectDetection.from_pretrained(MODEL_NAME, 
     #                                                         id2label=ID2LABEL,
     #                                                         label2id=LABEL2ID,
@@ -72,7 +79,7 @@ def initialize_processor():
         do_size=True,
         size={'max_height': MAX_SIZE, 'max_width': MAX_SIZE},
         do_pad=True,
-        pad_size={'height': MAX_SIZE, 'width': MAX_SIZE},
-        # use_fast=True
+        use_fast=True
     )
+
     return processor

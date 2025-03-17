@@ -8,8 +8,6 @@ from utils import not_change_test_dataset
 from pprint import pprint
 from utils import set_random_seeds
 
-import transformers
-
 # Configuration Constants
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 os.environ['CUBLAS_WORKSPACE_CONFIG'] = ':4096:8'

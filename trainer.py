@@ -6,7 +6,7 @@ from evaluate import compute_metrics
 from functools import partial
 
 
-def create_training_arguments() -> TrainingArguments:
+def create_training_arguments(params) -> TrainingArguments:
     """
     Create and return the training arguments for the object detection model.
 
@@ -17,34 +17,40 @@ def create_training_arguments() -> TrainingArguments:
     # Below is an example of how to create training arguments. You are free to change this.
     # ref: https://huggingface.co/transformers/main_classes/trainer.html#transformers.TrainingArguments
     """
-    training_args = TrainingArguments(
-        output_dir=OUTPUT_DIR,  # Where to save the model checkpoints
-        # num_train_epochs=180,  # Adjust number of epochs as needed
-        num_train_epochs=80,  # Adjust number of epochs as needed
-        fp16=True,  # Use mixed precision if you have a supported GPU (set to True for faster training)
-        per_device_train_batch_size=8,  # Batch size for training
-        dataloader_num_workers=4,  # Number of worker processes for data loading
-        learning_rate=5e-5,  # Learning rate for fine-tuning
-        lr_scheduler_type="cosine",  # Type of learning rate scheduler
-        # lr_scheduler_kwargs={"num_stable_steps": 500, "num_decay_steps": 2000, "min_lr_ratio": 0.01},  # Scheduler arguments
-        weight_decay=0,  # Weight decay to avoid overfitting
-        max_grad_norm=0.1,  # Gradient clipping to avoid exploding gradients
-        metric_for_best_model="eval_map",  # Metric to determine the best model
-        greater_is_better=True,  # Whether a higher metric is better
-        load_best_model_at_end=True,  # Load the best model after training
-        eval_strategy="epoch",  # Evaluate at the end of every epoch
-        save_strategy="epoch",  # Save the model at the end of every epoch
-        save_safetensors=False,  # Save the model in safe mode
-        save_total_limit=2,  # Keep only the last 2 checkpoints
-        remove_unused_columns=False,  # Don't remove columns like 'image' (important for data)
-        eval_do_concat_batches=False,  # Ensure proper evaluation when batches are not concatenated
-        push_to_hub=False,  # Whether to push the model to the Hub,
-    )
+    if params is not None:
+        training_args = TrainingArguments(
+            output_dir=OUTPUT_DIR,  # Where to save the model checkpoints
+            **params
+        )
+    else:
+        training_args = TrainingArguments(
+            output_dir=OUTPUT_DIR,  # Where to save the model checkpoints
+            # num_train_epochs=180,  # Adjust number of epochs as needed
+            num_train_epochs=60,  # Adjust number of epochs as needed
+            fp16=False,  # Use mixed precision if you have a supported GPU (set to True for faster training)
+            per_device_train_batch_size=8,  # Batch size for training
+            dataloader_num_workers=4,  # Number of worker processes for data loading
+            learning_rate=5e-5,  # Learning rate for fine-tuning
+            lr_scheduler_type="linear",  # Type of learning rate scheduler
+            # lr_scheduler_kwargs={"num_stable_steps": 500, "num_decay_steps": 2000, "min_lr_ratio": 0.01},  # Scheduler arguments
+            weight_decay=1e-5,  # Weight decay to avoid overfitting
+            max_grad_norm=0.1,  # Gradient clipping to avoid exploding gradients
+            metric_for_best_model="eval_map",  # Metric to determine the best model
+            greater_is_better=True,  # Whether a higher metric is better
+            load_best_model_at_end=True,  # Load the best model after training
+            eval_strategy="epoch",  # Evaluate at the end of every epoch
+            save_strategy="epoch",  # Save the model at the end of every epoch
+            save_safetensors=False,  # Save the model in safe mode
+            save_total_limit=2,  # Keep only the last 2 checkpoints
+            remove_unused_columns=False,  # Don't remove columns like 'image' (important for data)
+            eval_do_concat_batches=False,  # Ensure proper evaluation when batches are not concatenated
+            push_to_hub=False,  # Whether to push the model to the Hub,
+        )
 
     return training_args
 
 
-def build_trainer(model, processor, datasets) -> Trainer:
+def build_trainer(model, processor, datasets, params=None) -> Trainer:
     """
     Build and return the trainer object for training and evaluation.
 
@@ -58,17 +64,14 @@ def build_trainer(model, processor, datasets) -> Trainer:
     """
     def collate_fn(batch):
         data = {}
-        if "pixel_values" not in batch[0]:
-            batch
         data["pixel_values"] = torch.stack([x["pixel_values"] for x in batch])
         data["labels"] = [x["labels"] for x in batch]
-
         if "pixel_mask" in batch[0]:
             data["pixel_mask"] = torch.stack([x["pixel_mask"] for x in batch])
 
         return data
 
-    training_args: TrainingArguments = create_training_arguments()
+    training_args: TrainingArguments = create_training_arguments(params)
 
     # Partial function to compute metrics
     compute_metrics_fn = partial(
