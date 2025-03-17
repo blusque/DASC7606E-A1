@@ -29,9 +29,7 @@ def initialize_model():
     model = AutoModelForObjectDetection.from_pretrained(MODEL_NAME, 
                                                         id2label=ID2LABEL,
                                                         label2id=LABEL2ID,
-                                                        ignore_mismatched_sizes=True,
-                                                        # two_stage=True,
-                                                        # with_box_refine=True
+                                                        ignore_mismatched_sizes=True
                                                         )
     # model = AutoModel.from_pretrained(MODEL_NAME, 
     #                                 id2label=ID2LABEL,
